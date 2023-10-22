@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getHomeBannerAPI } from '@/services/home'
+import { getHomeBannerAPI, getHomeCategoryMutliAPI } from '@/services/home'
 import CustomNavbar from './components/CustomNavbar.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import type { BannerItem } from '@/types/home'
@@ -8,13 +8,20 @@ import { ref } from 'vue'
 
 const bannerList = ref<BannerItem[]>([])
 
+// 获取轮播图数据
 const getHomeBannerData = async () => {
   const res = await getHomeBannerAPI()
   bannerList.value = res.result
 }
 
+// 获取前台分类数据
+const getHomeCategoryData = async () => {
+  const res = await getHomeCategoryMutliAPI()
+}
+
 onLoad(() => {
   getHomeBannerData()
+  getHomeCategoryData()
 })
 </script>
 
