@@ -17,19 +17,22 @@ const hotMap = [
 const query = defineProps<{
   type: string
 }>()
-const current = hotMap.find((v) => v.type === query.type)
+const currentMap = hotMap.find((v) => v.type === query.type)
 // 动态设置标题
-uni.setNavigationBarTitle({ title: current!.title })
+uni.setNavigationBarTitle({ title: currentMap!.title })
 
 // 推荐选项
-const SubTypes = ref<SubTypeItem[]>([])
+const SubTypes = ref<(SubTypeItem & { finsh?: boolean })[]>([])
 // 推荐封面图
 const bannerPicture = ref('')
 // 高亮的下标
 const activeIndex = ref(0)
 
 const getHotRecommentData = async () => {
-  const res = await getHotRecommentAPI(current!.url)
+  const res = await getHotRecommentAPI(currentMap!.url, {
+    page: import.meta.env.DEV ? 30 : 1,
+    pageSize: 10,
+  })
   bannerPicture.value = res.result.bannerPicture
   SubTypes.value = res.result.subTypes
 }
@@ -41,10 +44,19 @@ onLoad(() => {
 const OnScrolltolower = async () => {
   // 获取当前选项
   const currSubTypes = SubTypes.value[activeIndex.value]
-  //当前页码累加
-  currSubTypes.goodsItems.page++
+  //分页条件
+  if (currSubTypes.goodsItems.page < currSubTypes.goodsItems.pages) {
+    //当前页码累加
+    currSubTypes.goodsItems.page++
+  } else {
+    // 标记已结束
+    currSubTypes.finsh = true
+    // 退出并轻提示
+    return uni.showToast({ icon: 'none', title: '没有更多数据了~' })
+  }
+
   //调用API传参
-  const res = await getHotRecommentAPI(current!.url, {
+  const res = await getHotRecommentAPI(currentMap!.url, {
     subType: currSubTypes.id,
     page: currSubTypes.goodsItems.page,
     pageSize: currSubTypes.goodsItems.pageSize,
@@ -98,7 +110,9 @@ const OnScrolltolower = async () => {
           </view>
         </navigator>
       </view>
-      <view class="loading-text">正在加载...</view>
+      <view class="loading-text">
+        {{ item.finsh ? '没有更多数据了~' : '正在加载中...' }}
+      </view>
     </scroll-view>
   </view>
 </template>
