@@ -1,6 +1,9 @@
 /**
  * BannerItem
  */
+
+import type { GoodsItem } from './global'
+
 //首页-广告区域轮播图数据类型
 export type BannerItem = {
   hrefUrl: string
@@ -33,19 +36,4 @@ export type HotItem = {
 }
 
 /** 猜你喜欢-商品类型 */
-export type GuessItem = {
-  /** 商品描述 */
-  desc: string
-  /** 商品折扣 */
-  discount: number
-  /** id */
-  id: string
-  /** 商品名称 */
-  name: string
-  /** 商品已下单数量 */
-  orderNum: number
-  /** 商品图片 */
-  picture: string
-  /** 商品价格 */
-  price: number
-}
+export type GuessItem = GoodsItem
