@@ -1,11 +1,9 @@
-<script setup lang="ts">
-//
-</script>
-
 <template>
-  <view class="cart">cart</view>
+  <div></div>
 </template>
 
-<style lang="scss">
-//
-</style>
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+</script>
+
+<style scoped></style>
