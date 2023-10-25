@@ -10,7 +10,7 @@
         </view>
       </view>
       <view class="categories">
-        <scroll-view scroll-y="true" class="primary">
+        <scroll-view :scroll-y="true" class="primary">
           <view class="item active sk-pseudo sk-pseudo-circle">
             <text class="name sk-transparent sk-text-14-2857-553 sk-text">居家</text>
           </view>
