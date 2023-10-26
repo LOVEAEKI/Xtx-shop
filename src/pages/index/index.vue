@@ -6,8 +6,9 @@ import HotPanel from './components/HotPanel.vue'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
-import type { XtxGuessInstance } from '@/types/component'
+import type { XtxGuessInstance } from '@/types/components'
 import PageSkeleton from './components/PageSkeleton.vue'
+import { useGuessList } from '@/composables'
 
 const bannerList = ref<BannerItem[]>([])
 
@@ -31,13 +32,8 @@ const getHomeHotData = async () => {
   const res = await getHomeHotAPI()
   hotList.value = res.result
 }
+const { guessRef, onScrolltolower } = useGuessList()
 
-const XtxGuessRef = ref<XtxGuessInstance>()
-
-// 触底更新
-const onScrolltolower = () => {
-  XtxGuessRef.value?.getMore()
-}
 
 // 自定义下拉刷新
 //控制刷新动画 默认false关闭
@@ -45,13 +41,13 @@ const isTriggered = ref(false)
 const onRefresherrefresh = async () => {
   isTriggered.value = true
 
-  XtxGuessRef.value?.resetData()
+  guessRef.value?.resetData()
 
   await Promise.all([
     getHomeBannerData(),
     getHomeCategoryData(),
     getHomeHotData(),
-    XtxGuessRef.value?.getMore(),
+    guessRef.value?.getMore(),
   ])
   isTriggered.value = false
 }
@@ -86,16 +82,7 @@ onLoad(() => {
       <!-- 热门推荐 -->
       <HotPanel :list="hotList" />
       <!-- 猜你喜欢 -->
-      <XtxGuess ref="XtxGuessRef" />
-
-      <!-- 自定义轮播图 -->
-      <XtxSwiper :list="bannerList" />
-      <!-- 分类面板 -->
-      <CategoryPanel :list="categoryList" />
-      <!-- 热门推荐 -->
-      <HotPanel :list="hotList" />
-      <!-- 猜你喜欢 -->
-      <XtxGuess ref="XtxGuessRef" />
+      <XtxGuess ref="guessRef" />
     </template>
   </scroll-view>
 </template>
@@ -112,3 +99,4 @@ page {
   flex: 1%;
 }
 </style>
+@/types/components

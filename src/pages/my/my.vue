@@ -2,6 +2,7 @@
 
 <script setup lang="ts">
 import { useMemberStore } from '@/stores'
+import { useGuessList } from '@/composables/index'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -12,12 +13,22 @@ const orderTypes = [
   { type: 3, text: '待收货', icon: 'icon-check' },
   { type: 4, text: '待评价', icon: 'icon-comment' },
 ]
+// // 下拉刷新动画
+// const isLoading = ref(false)
+
+const { guessRef, onScrolltolower } = useGuessList()
+
+// 自定义下拉刷新
+// const onRefresherrefresh = async () => {
+//   isLoading.value = true
+//   await guessRef.value.resetData()
+// }
 
 const memberStore = useMemberStore()
 </script>
 
 <template>
-  <scroll-view class="viewport" scroll-y enable-back-to-top>
+  <scroll-view class="viewport" scroll-y enable-back-to-top @scrolltolower="onScrolltolower">
     <!-- 个人资料 -->
     <view class="profile" :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
       <!-- 情况1：已登录 -->
@@ -41,7 +52,8 @@ const memberStore = useMemberStore()
             class="avatar gray"
             mode="aspectFill"
             src="http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-06/db628d42-88a7-46e7-abb8-659448c33081.png"
-          ></image>
+          >
+          </image>
         </navigator>
         <view class="meta">
           <navigator url="/pages/login/login" hover-class="none" class="nickname">
@@ -198,17 +210,20 @@ page {
     display: flex;
     justify-content: space-between;
     padding: 40rpx 20rpx 10rpx;
+
     .navigator,
     .contact {
       text-align: center;
       font-size: 24rpx;
       color: #333;
+
       &::before {
         display: block;
         font-size: 60rpx;
         color: #ff9545;
       }
     }
+
     .contact {
       padding: 0;
       margin: 0;
@@ -225,3 +240,4 @@ page {
   margin-top: 20rpx;
 }
 </style>
+@/types/components
